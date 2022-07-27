@@ -1,6 +1,5 @@
 import os
 import pickle
-from io import BytesIO
 
 import requests
 from PIL import Image
@@ -10,7 +9,8 @@ from googleapiclient.discovery import build
 
 # Setup the Photo v1 API
 
-SCOPES = ["https://www.googleapis.com/auth/photoslibrary.sharing"]
+SCOPES = ['https://www.googleapis.com/auth/photoslibrary.readonly',
+          "https://www.googleapis.com/auth/photoslibrary.sharing"]
 creds = None
 if os.path.exists("token.pickle"):
     with open("token.pickle", "rb") as tokenFile:
@@ -32,7 +32,9 @@ for item in items:
     # if item["mimeType"] == 'image/jpeg':
     #     image = Image.open(BytesIO(requests.get(item['baseUrl']).content))
     #     image.show()
-    with open("Photos/" + item['filename'], 'wb') as f:
+    filename = f"Photos/{item['filename']}"
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    with open(filename, 'wb') as f:
         f.write(requests.get(item['baseUrl']).content)
         if item["mimeType"] == 'image/jpeg':
             image = Image.open("Photos/" + item['filename'])

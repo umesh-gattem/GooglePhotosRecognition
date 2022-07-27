@@ -130,4 +130,6 @@ dmypy.json
 
 GooglePhotosAPI/credentials.json
 GooglePhotosAPI/GooglePhotos.json
+GooglePhotosAPI/token.pickle
+GooglePhotosAPI/Photos
 samples/token.pickle
