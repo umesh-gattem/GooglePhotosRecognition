@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+GooglePhotosAPI/credentials.json
+GooglePhotosAPI/GooglePhotos.json
+samples/token.pickle
