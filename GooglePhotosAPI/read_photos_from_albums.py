@@ -23,7 +23,7 @@ if not creds or not creds.valid:
         pickle.dump(creds, tokenFile)
 service = build('photoslibrary', 'v1', credentials=creds, static_discovery=False)
 
-album_service = service.albums().list(pageSize=1).execute()
+album_service = service.albums().list(pageSize=50).execute()
 
 items = album_service.get('albums', [])
 for item in items:

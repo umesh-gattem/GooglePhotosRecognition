@@ -1,15 +1,11 @@
-"""Read Latest photos from Google Photos based on pageSize parameter """
-
 import os
 import pickle
+from pathlib import Path
 
 import requests
-from PIL import Image
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-
-# Setup the Photo v1 API
 
 SCOPES = ['https://www.googleapis.com/auth/photoslibrary.readonly',
           "https://www.googleapis.com/auth/photoslibrary.sharing"]
@@ -26,14 +22,11 @@ if not creds or not creds.valid:
     with open("token.pickle", "wb") as tokenFile:
         pickle.dump(creds, tokenFile)
 service = build('photoslibrary', 'v1', credentials=creds, static_discovery=False)
-
-results = service.mediaItems().search(body={"pageSize": 10, "pageToken": ''}).execute()
-items = results.get('mediaItems', [])
+album_service = service.albums().list(pageSize=50).execute()
+print(album_service.get('nextPageToken'))
+items = album_service.get('albums', [])
+count = 0
 for item in items:
-    filename = f"Photos/{item['filename']}"
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
-    with open(filename, 'wb') as f:
-        f.write(requests.get(item['baseUrl']).content)
-        if item["mimeType"] == 'image/jpeg':
-            image = Image.open("Photos/" + item['filename'])
-            image.show()
+    # print(item["title"])
+    count+=1
+print(count)
