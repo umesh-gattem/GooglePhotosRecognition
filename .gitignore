@@ -132,4 +132,6 @@ GooglePhotosAPI/credentials.json
 GooglePhotosAPI/GooglePhotos.json
 GooglePhotosAPI/token.pickle
 GooglePhotosAPI/Photos
+GooglePhotosAPI/AlbumPhotos
+GooglePhotosAPI/CroppedImages
 samples/token.pickle
