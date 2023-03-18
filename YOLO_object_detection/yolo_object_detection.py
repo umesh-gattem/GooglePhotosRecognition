@@ -12,7 +12,7 @@ from tensorflow.keras.models import load_model
 
 from yad2k.models.keras_yolo import yolo_head
 from yad2k.utils.utils import draw_boxes, scale_boxes, read_classes, read_anchors, \
-    preprocess_image
+    preprocess_image, draw_boxes_for_person
 
 
 def yolo_filter_boxes(boxes, box_confidence, box_class_probs, threshold=.6):
@@ -199,6 +199,38 @@ def predict(image_file):
     return out_scores, out_boxes, out_classes
 
 
-files = Path('images').glob('*')
+def predict_person(image_file):
+    """
+    Runs the graph to predict boxes for "image_file". Prints and plots the predictions.
+
+    Arguments:
+    image_file -- name of an image stored in the "images" folder.
+
+    Returns:
+    out_scores -- tensor of shape (None, ), scores of the predicted boxes
+    out_boxes -- tensor of shape (None, 4), coordinates of the predicted boxes
+    out_classes -- tensor of shape (None, ), class index of the predicted boxes
+
+    Note: "None" actually represents the number of predicted boxes, it varies between 0 and max_boxes.
+    """
+
+    # Preprocess your image
+    image, image_data = preprocess_image(image_file, model_image_size=(608, 608))
+
+    yolo_model_outputs = yolo_model(image_data)
+    yolo_outputs = yolo_head(yolo_model_outputs, anchors, len(class_names))
+
+    out_scores, out_boxes, out_classes = yolo_eval(yolo_outputs, [image.size[1], image.size[0]], 10, 0.3, 0.5)
+
+    print('Found {} boxes for {}'.format(len(out_boxes), image_file))
+    draw_boxes_for_person(image, image_file, out_boxes, out_classes, class_names, out_scores)
+    return out_scores, out_boxes, out_classes
+
+
+files = Path('Hayan').glob('*')
+count = 1
 for file in files:
-    out_scores, out_boxes, out_classes = predict(file)
+    out_scores, out_boxes, out_classes = predict_person(file)
+    count += 1
+
+print(count)
